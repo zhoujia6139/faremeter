@@ -16,7 +16,7 @@ const keypair = Keypair.fromSecretKey(
   Uint8Array.from(JSON.parse(fs.readFileSync(PAYER_KEYPAIR_PATH, "utf-8"))),
 );
 
-const wallet = await createLocalWallet("devnet", keypair);
+const wallet = await createLocalWallet("mainnet-beta", keypair);
 //打印 wallet 的 publicKey
 console.log("wallet publicKey:", wallet.publicKey.toBase58());
 
@@ -24,5 +24,5 @@ const fetchWithPayer = wrapFetch(fetch, {
   handlers: [createPaymentHandler(wallet)],
 });
 
-const req = await fetchWithPayer("http://127.0.0.1:3000/devnet");
+const req = await fetchWithPayer("http://127.0.0.1:3000/mainnet");
 await logResponse(req);

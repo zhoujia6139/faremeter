@@ -20,43 +20,86 @@ const payToKeypair = Keypair.fromSecretKey(
   Uint8Array.from(JSON.parse(fs.readFileSync(PAYTO_KEYPAIR_PATH, "utf-8"))),
 );
 
-const network = "devnet";
+const devnet_network = "devnet";
+const mainnet_network = "mainnet-beta";
 const port = 3000;
 
 const splTokenName = "USDC";
 
-const usdcInfo = lookupKnownSPLToken(network, splTokenName);
-if (!usdcInfo) {
-  throw new Error(`couldn't look up SPLToken ${splTokenName} on ${network}!`);
+const devnet_usdcInfo = lookupKnownSPLToken(devnet_network, splTokenName);
+if (!devnet_usdcInfo) {
+  throw new Error(`couldn't look up SPLToken ${splTokenName} on ${devnet_network}!`);
+}
+
+const mainnet_usdcInfo = lookupKnownSPLToken(mainnet_network, splTokenName);
+if (!mainnet_usdcInfo) {
+  throw new Error(`couldn't look up SPLToken ${splTokenName} on ${mainnet_network}!`);
 }
 
 const payTo = payToKeypair.publicKey.toBase58();
+// print payTo pubkey
+console.log("payTo pubkey:", payTo);
 
 const run = async () => {
   const app = express();
 
   app.get(
-    "/protected",
+    "/devnet",
     await createMiddleware({
       facilitatorURL: "http://localhost:4000",
       accepts: [
         // USDC xSolanaSettlement Payment
         xSolanaSettlement({
-          network,
+          network: devnet_network,
           payTo,
           asset: "USDC",
           amount: "10000", // 0.01 USDC
         }),
         // Native SOL xSolanaSettlement Payment
         xSolanaSettlement({
-          network,
+          network: devnet_network,
           payTo,
           asset: "sol",
           amount: "1000000",
         }),
         // USDC Exact Payment
         x402Exact({
-          network,
+          network: devnet_network,
+          asset: "USDC",
+          amount: "10000", // 0.01 USDC,
+          payTo,
+        }),
+      ],
+    }),
+    (_, res) => {
+      res.json({
+        msg: "success",
+      });
+    },
+  );
+
+  app.get(
+    "/mainnet",
+    await createMiddleware({
+      facilitatorURL: "http://localhost:4000",
+      accepts: [
+        // USDC xSolanaSettlement Payment
+        xSolanaSettlement({
+          network: mainnet_network,
+          payTo,
+          asset: "USDC",
+          amount: "10000", // 0.01 USDC
+        }),
+        // Native SOL xSolanaSettlement Payment
+        xSolanaSettlement({
+          network: mainnet_network,
+          payTo,
+          asset: "sol",
+          amount: "1000000",
+        }),
+        // USDC Exact Payment
+        x402Exact({
+          network: mainnet_network,
           asset: "USDC",
           amount: "10000", // 0.01 USDC,
           payTo,

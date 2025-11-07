@@ -9,6 +9,7 @@ import { argsFromEnv } from "./utils";
 import * as solana from "./solana";
 import { createFacilitatorHandler as createEVMHandler } from "@faremeter/payment-evm/exact";
 import * as evmChains from "viem/chains";
+import { http } from "viem";
 
 import { configure, getConsoleSink } from "@logtape/logtape";
 
@@ -24,22 +25,47 @@ await configure({
   ],
 });
 
-const solanaHandlers =
+const solanaDevHandlers =
   argsFromEnv(["ADMIN_KEYPAIR_PATH"], (...envVars) =>
     solana.createHandlers("devnet", ...envVars),
   ) ?? [];
 
-const evmHandlers =
-  (await argsFromEnv(["EVM_PRIVATE_KEY"], async (privateKey) => [
-    await createEVMHandler(evmChains.baseSepolia, privateKey, "USDC"),
-  ])) ?? [];
+const solanaMainnetHandlers =
+  argsFromEnv(["ADMIN_KEYPAIR_PATH"], (...envVars) =>
+    solana.createHandlers("mainnet-beta", ...envVars),
+  ) ?? [];  
 
-const skaleHandlers =
-  (await argsFromEnv(["EVM_PRIVATE_KEY"], async (privateKey) => [
-    await createEVMHandler(evmChains.skaleEuropaTestnet, privateKey, "USDC"),
-  ])) ?? [];
+const baseSepoliaHandlers =
+  (await argsFromEnv(["BASE_SEPOLIA_PRIVATE_KEY"], async (privateKey) => {
+    // Support custom RPC URL via environment variable
+    const ethRpcUrl = process.env.BASE_SEPOLIA_RPC_URL;
+    console.log("ethRpcUrl for baseSepolia:", ethRpcUrl);
+    return [
+      await createEVMHandler(
+        evmChains.baseSepolia,
+        privateKey,
+        "USDC",
+        ethRpcUrl ? { transport: http(ethRpcUrl) } : {},
+      ),
+    ];
+  })) ?? [];
 
-const handlers = [...solanaHandlers, ...evmHandlers, ...skaleHandlers];
+const baseHandlers =
+  (await argsFromEnv(["BASE_PRIVATE_KEY"], async (privateKey) => {
+    // Support custom RPC URL via environment variable
+    const ethRpcUrl = process.env.BASE_RPC_URL;
+    console.log("ethRpcUrl for base:", ethRpcUrl);
+    return [
+      await createEVMHandler(
+        evmChains.base,
+        privateKey,
+        "USDC",
+        ethRpcUrl ? { transport: http(ethRpcUrl) } : {},
+      ),
+    ];
+  })) ?? [];  
+
+const handlers = [...solanaDevHandlers, ...solanaMainnetHandlers, ...baseSepoliaHandlers, ...baseHandlers];
 
 if (handlers.length === 0) {
   logger.error(
@@ -72,10 +98,16 @@ app.route(
 serve({ fetch: app.fetch, port: listenPort }, (info) => {
   logger.info(`Facilitator server listening on port ${info.port}`);
   logger.info(`Active payment handlers: ${handlers.length}`);
-  if (solanaHandlers.length > 0) {
-    logger.info("   - Solana (SOL & SPL Token)");
+  if (solanaDevHandlers.length > 0) {
+    logger.info("   - Solana Devnet(SOL & SPL Token)");
   }
-  if (evmHandlers.length > 0) {
+  if (solanaMainnetHandlers.length > 0) {
+    logger.info("   - Solana Mainnet (SOL & SPL Token)");
+  }
+  if (baseSepoliaHandlers.length > 0) {
     logger.info("   - EVM (Base Sepolia)");
+  }
+  if (baseHandlers.length > 0) {
+    logger.info("   - EVM (Base)");
   }
 });

@@ -13,7 +13,7 @@ if (!PAYER_KEYPAIR_PATH) {
   throw new Error("PAYER_KEYPAIR_PATH must be set in your environment");
 }
 
-const network = "devnet";
+const network = "mainnet-beta";
 const splTokenName = "USDC";
 
 const usdcInfo = lookupKnownSPLToken(network, splTokenName);
@@ -34,6 +34,6 @@ const fetchWithPayer = wrapFetch(fetch, {
   handlers: [createPaymentHandler(wallet, mint)],
 });
 
-const req = await fetchWithPayer("http://127.0.0.1:3000/devnet");
+const req = await fetchWithPayer("http://127.0.0.1:3000/mainnet");
 
 await logResponse(req);

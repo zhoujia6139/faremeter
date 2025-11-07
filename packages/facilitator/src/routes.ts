@@ -58,6 +58,7 @@ export function createFacilitatorRoutes(args: CreateFacilitatorRoutesArgs) {
   }
 
   router.post("/settle", async (c) => {
+    logger.info("received settlement request: {*}", await c.req.json());
     const x402Req = x.x402SettleRequest(await c.req.json());
 
     if (isValidationError(x402Req)) {
@@ -78,7 +79,7 @@ export function createFacilitatorRoutes(args: CreateFacilitatorRoutesArgs) {
       );
     }
 
-    logger.debug("starting settlement attempt for request: {*}", x402Req);
+    logger.info("starting settlement attempt for request: {*}", x402Req);
 
     for (const handler of args.handlers) {
       let t;
@@ -106,7 +107,7 @@ export function createFacilitatorRoutes(args: CreateFacilitatorRoutesArgs) {
         continue;
       }
 
-      logger.debug(
+      logger.info(
         "facilitator handler accepted settlement and returned: {*}",
         t,
       );
@@ -166,7 +167,7 @@ export function createFacilitatorRoutes(args: CreateFacilitatorRoutesArgs) {
       }
     });
 
-    logger.debug(`returning ${accepts.length} accepts: {*}`, {
+    logger.info(`returning ${accepts.length} accepts: {*}`, {
       accepts: accepts.map(summarizeRequirements),
     });
 
@@ -205,7 +206,7 @@ export function createFacilitatorRoutes(args: CreateFacilitatorRoutesArgs) {
       }
     });
 
-    logger.debug(`returning ${kinds.length} kinds supported: {*}`, {
+    logger.info(`returning ${kinds.length} kinds supported: {*}`, {
       kinds,
     });
 

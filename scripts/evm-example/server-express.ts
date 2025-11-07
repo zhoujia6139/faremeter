@@ -15,19 +15,39 @@ if (!isAddress(payTo)) {
   );
 }
 
-const network = "base-sepolia";
 const port = PORT ? parseInt(PORT) : 4021;
 
 const run = async () => {
   const app = express();
 
   app.get(
-    "/weather",
+    "/base",
     await createMiddleware({
       facilitatorURL: "http://localhost:4000",
       accepts: [
         x402Exact({
-          network,
+          network:"base",
+          asset: "USDC",
+          payTo,
+          amount: "10000", // 0.01 USDC
+        }),
+      ],
+    }),
+    (_, res) => {
+      res.json({
+        temperature: 72,
+        conditions: "sunny",
+        message: "Thanks for your payment!",
+      });
+    },
+  );
+  app.get(
+    "/base-sepolia",
+    await createMiddleware({
+      facilitatorURL: "http://localhost:4000",
+      accepts: [
+        x402Exact({
+          network:"base-sepolia",
           asset: "USDC",
           payTo,
           amount: "10000", // 0.01 USDC

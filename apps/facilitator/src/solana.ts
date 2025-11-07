@@ -18,8 +18,18 @@ export function createHandlers(network: string, keypairPath: string) {
   const adminKeypair = Keypair.fromSecretKey(
     Uint8Array.from(JSON.parse(fs.readFileSync(keypairPath, "utf-8"))),
   );
-  const apiUrl = clusterApiUrl(network);
-  const connection = new Connection(apiUrl, "confirmed");
+  // print admin pubkey
+  console.log("admin pubkey:", adminKeypair.publicKey.toBase58());
+  // Support custom RPC URL via environment variable, fallback to default cluster API
+  let apiUrl: string;
+
+  if (network === "mainnet-beta") {
+    apiUrl = process.env.SOLANA_MAINNET_RPC_URL || clusterApiUrl("mainnet-beta");
+  } else {
+    apiUrl = process.env.SOLANA_DEVNET_RPC_URL || clusterApiUrl("devnet");
+  }
+  console.log("solana apiUrl for network:", network, apiUrl);
+  const connection = new Connection(apiUrl, "processed");
   const rpc = createSolanaRpc(apiUrl);
 
   const usdcInfo = lookupKnownSPLToken(network, "USDC");

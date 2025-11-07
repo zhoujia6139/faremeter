@@ -3,7 +3,7 @@ import { logger, logResponse } from "../logger";
 import { createLocalWallet } from "@faremeter/wallet-evm";
 import { createPaymentHandler } from "@faremeter/payment-evm/exact";
 import { wrap as wrapFetch } from "@faremeter/fetch";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 
 const { EVM_PRIVATE_KEY } = process.env;
 
@@ -14,11 +14,11 @@ if (!EVM_PRIVATE_KEY) {
 // Parse command line arguments
 const args = process.argv.slice(2);
 const port = args[0] ?? "4021";
-const endpoint = args[1] ?? "base-sepolia";
+const endpoint = args[1] ?? "base";
 const url = `http://localhost:${port}/${endpoint}`;
 
-logger.info("Creating wallet for Base Sepolia USDC payments...");
-const wallet = await createLocalWallet(baseSepolia, EVM_PRIVATE_KEY);
+logger.info("Creating wallet for Base USDC payments...");
+const wallet = await createLocalWallet(base, EVM_PRIVATE_KEY);
 logger.info(`Wallet address: ${wallet.address}`);
 
 const fetchWithPayer = wrapFetch(fetch, {
