@@ -1,0 +1,62 @@
+{
+  "name": "@faremeter/x-solana-settlement",
+  "version": "0.3.1",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/src/index.js",
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./header": {
+      "require": "./dist/src/header.js",
+      "import": "./dist/src/header.js",
+      "types": "./dist/src/header.d.ts"
+    },
+    "./facilitator": {
+      "require": "./dist/src/facilitator.js",
+      "import": "./dist/src/facilitator.js",
+      "types": "./dist/src/facilitator.d.ts"
+    },
+    "./solana": {
+      "require": "./dist/src/solana.js",
+      "import": "./dist/src/solana.js",
+      "types": "./dist/src/solana.d.ts"
+    },
+    "./types": {
+      "require": "./dist/src/types.js",
+      "import": "./dist/src/types.js",
+      "types": "./dist/src/types.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "packageManager": "pnpm@10.12.1",
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@tapjs/asserts": "catalog:",
+    "@types/bn.js": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tap": "catalog:",
+    "tsc-esm-fix": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "typescript-language-server": "catalog:"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "catalog:",
+    "@faremeter/types": "workspace:^",
+    "@logtape/logtape": "catalog:",
+    "@noble/ed25519": "catalog:",
+    "@solana/spl-token": "catalog:",
+    "@solana/web3.js": "catalog:",
+    "arktype": "catalog:",
+    "bn.js": "catalog:",
+    "bs58": "catalog:"
+  }
+}

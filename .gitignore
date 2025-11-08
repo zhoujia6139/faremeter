@@ -10,4 +10,5 @@ keypairs
 .env-checked
 .eslintcache
 .build-finished
+.idea
 .DS_Store
