@@ -20,6 +20,11 @@
       "require": "./dist/src/evm.js",
       "import": "./dist/src/evm.js",
       "types": "./dist/src/evm.d.ts"
+    },
+    "./soon": {
+      "require": "./dist/src/soon.js",
+      "import": "./dist/src/soon.js",
+      "types": "./dist/src/soon.d.ts"
     }
   },
   "files": [
