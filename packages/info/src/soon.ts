@@ -28,10 +28,10 @@ const knownSPLTokens = {
   USDC: {
     cluster: {
       "soon-mainnet": {
-        address: "0x0000000000000000000000000000000000000000",
+        address: "F8cgVH8JER2ty6MPVHjJwDGt4tMbPueWrwQsu45f2feX",
       },
       "soon-testnet": {
-        address: "0x0000000000000000000000000000000000000000",
+        address: "F8cgVH8JER2ty6MPVHjJwDGt4tMbPueWrwQsu45f2feX",
       },
     },
     toUnit: (v: UnitInput) => v.toString(),

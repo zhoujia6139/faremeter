@@ -7,6 +7,7 @@ import { createFacilitatorRoutes } from "@faremeter/facilitator";
 
 import { argsFromEnv } from "./utils";
 import * as solana from "./solana";
+import * as soon from "./soon";
 import { createFacilitatorHandler as createEVMHandler } from "@faremeter/payment-evm/exact";
 import * as evmChains from "viem/chains";
 import { http } from "viem";
@@ -24,6 +25,16 @@ await configure({
     { category: "faremeter", lowestLevel: "info", sinks: ["console"] },
   ],
 });
+
+const soonTestnetHandlers =
+  argsFromEnv(["ADMIN_KEYPAIR_PATH"], (...envVars) =>
+    soon.createHandlers("soon-testnet", ...envVars),
+  ) ?? [];
+
+const soonMainnetHandlers =
+  argsFromEnv(["ADMIN_KEYPAIR_PATH"], (...envVars) =>
+    soon.createHandlers("soon-mainnet", ...envVars),
+  ) ?? []; 
 
 const solanaDevHandlers =
   argsFromEnv(["ADMIN_KEYPAIR_PATH"], (...envVars) =>
@@ -98,6 +109,12 @@ app.route(
 serve({ fetch: app.fetch, port: listenPort }, (info) => {
   logger.info(`Facilitator server listening on port ${info.port}`);
   logger.info(`Active payment handlers: ${handlers.length}`);
+  if (soonTestnetHandlers.length > 0) {
+    logger.info("   - Soon Testnet (Soon-ETH & SPL Token)");
+  }
+  if (soonMainnetHandlers.length > 0) {
+    logger.info("   - Soon Mainnet (Soon-ETH & SPL Token)");
+  }
   if (solanaDevHandlers.length > 0) {
     logger.info("   - Solana Devnet(SOL & SPL Token)");
   }

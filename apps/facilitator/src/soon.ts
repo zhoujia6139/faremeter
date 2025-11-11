@@ -37,6 +37,10 @@ export function createHandlers(network: string, keypairPath: string) {
     throw new Error(`Couldn't look up the USDC SPL Token on ${network}`);
   }
 
+  console.log("usdcInfo:", JSON.stringify(usdcInfo, null, 2));
+  console.log("usdcInfo.address:", usdcInfo.address);
+  console.log("usdcInfo.address type:", typeof usdcInfo.address);
+
   const mint = new PublicKey(usdcInfo.address);
 
   // Add Solana handlers
