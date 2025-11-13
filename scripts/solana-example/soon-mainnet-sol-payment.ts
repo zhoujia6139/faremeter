@@ -1,0 +1,28 @@
+import "dotenv/config";
+import { logResponse } from "../logger";
+import { Keypair } from "@solana/web3.js";
+import { createLocalWallet } from "@faremeter/wallet-solana";
+import { createPaymentHandler } from "@faremeter/x-solana-settlement";
+import { wrap as wrapFetch } from "@faremeter/fetch";
+import fs from "fs";
+
+const { PAYER_KEYPAIR_PATH } = process.env;
+
+if (!PAYER_KEYPAIR_PATH) {
+  throw new Error("PAYER_KEYPAIR_PATH must be set in your environment");
+}
+
+const keypair = Keypair.fromSecretKey(
+  Uint8Array.from(JSON.parse(fs.readFileSync(PAYER_KEYPAIR_PATH, "utf-8"))),
+);
+
+const wallet = await createLocalWallet("soon-mainnet", keypair);
+//打印 wallet 的 publicKey
+console.log("wallet publicKey:", wallet.publicKey.toBase58());
+
+const fetchWithPayer = wrapFetch(fetch, {
+  handlers: [createPaymentHandler(wallet)],
+});
+
+const req = await fetchWithPayer("http://127.0.0.1:3000/soon-mainnet");
+await logResponse(req);

@@ -59,7 +59,7 @@ const run = async () => {
         xSolanaSettlement({
           network: testnet_network,
           payTo,
-          asset: "soon-eth",
+          asset: "sol",
           amount: "1000000",
         }),
         // USDC Exact Payment
@@ -94,8 +94,8 @@ const run = async () => {
         xSolanaSettlement({
           network: mainnet_network,
           payTo,
-          asset: "soon-eth",
-          amount: "1000000",
+          asset: "sol",
+          amount: "1000",
         }),
         // USDC Exact Payment
         x402Exact({

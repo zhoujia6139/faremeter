@@ -76,7 +76,7 @@ const baseHandlers =
     ];
   })) ?? [];  
 
-const handlers = [...solanaDevHandlers, ...solanaMainnetHandlers, ...baseSepoliaHandlers, ...baseHandlers];
+const handlers = [...solanaDevHandlers, ...soonMainnetHandlers, ...baseSepoliaHandlers, ...baseHandlers];
 
 if (handlers.length === 0) {
   logger.error(

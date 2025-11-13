@@ -28,7 +28,7 @@ const knownSPLTokens = {
   USDC: {
     cluster: {
       "soon-mainnet": {
-        address: "F8cgVH8JER2ty6MPVHjJwDGt4tMbPueWrwQsu45f2feX",
+        address: "ExYxyorY2x3h8gLcuypnHFQV3F36rmMkQVn7HHV8KjtA",
       },
       "soon-testnet": {
         address: "F8cgVH8JER2ty6MPVHjJwDGt4tMbPueWrwQsu45f2feX",
@@ -99,7 +99,7 @@ export function x402Exact(args: x402ExactArgs) {
 
 export type xSolanaSettlementArgs = {
   network: KnownCluster;
-  asset: KnownSPLToken | "soon-eth";
+  asset: KnownSPLToken | "sol";
   amount: UnitInput;
   payTo: Base58Address;
 };
@@ -108,9 +108,9 @@ export function xSolanaSettlement(args: xSolanaSettlementArgs) {
   let tokenInfo;
 
   // Special-case this, because it's not an SPL Token.
-  if (args.asset === "soon-eth") {
+  if (args.asset === "sol") {
     tokenInfo = {
-      address: "soon-eth",
+      address: "sol",
       toUnit: (x: UnitInput) => x.toString(),
     };
   } else {
@@ -120,6 +120,8 @@ export function xSolanaSettlement(args: xSolanaSettlementArgs) {
   if (!tokenInfo) {
     throw new Error(`couldn't look up token '${args.asset}' on Soon cluster`);
   }
+  //print tokenInfo
+  console.log("tokenInfo:", tokenInfo);
 
   const req = addX402PaymentRequirementDefaults({
     scheme: "@faremeter/x-solana-settlement",
